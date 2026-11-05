@@ -1,0 +1,12 @@
+{
+  "source": "https://github.com/ggml-org/whisper.cpp/releases/tag/v1.9.2",
+  "model": "ggml-small-q5_1.bin",
+  "archive": "whisper-bin-x64.zip",
+  "modelDownload": "optional at first transcription; no video upload",
+  "sha256": "49dcc16de826f20bd53d44f947a1ae49dfa81f86cad67a64d80820cb192d674a",
+  "modelSha256": "ae85e4a935d7a567bd102fe55afc16bb595bdb618e11b2fc7591bc08120411bb",
+  "runtime": "documents/helpers/speech",
+  "modelBytes": 190085487,
+  "modelSource": "https://huggingface.co/ggerganov/whisper.cpp",
+  "version": "1.9.2"
+}

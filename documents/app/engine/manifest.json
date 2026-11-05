@@ -1,0 +1,44 @@
+[
+  {
+    "name": "soffice.js",
+    "url": "https://cdn.zetaoffice.net/zetaoffice_latest/soffice.js",
+    "encoding": "br",
+    "bytes": 157580,
+    "sha256": "4bed643112ab973eb42706d1adcd5bc37c89338ce1225ef571df263d6eb47413",
+    "lastModified": "Tue, 13 May 2025 15:18:07 GMT",
+    "etag": "\"682362af-d180c\""
+  },
+  {
+    "name": "soffice.wasm",
+    "url": "https://cdn.zetaoffice.net/zetaoffice_latest/soffice.wasm",
+    "encoding": "br",
+    "bytes": 36279250,
+    "sha256": "a11808aaba3c9a4412a865bde645247fd9d0b262b5baa0680a9fced29a8656e4",
+    "lastModified": "Tue, 13 May 2025 15:18:14 GMT",
+    "etag": "\"682362b6-22993d2\""
+  },
+  {
+    "name": "soffice.data",
+    "url": "https://cdn.zetaoffice.net/zetaoffice_latest/soffice.data",
+    "encoding": "br",
+    "bytes": 15891013,
+    "sha256": "9d3c1cf3c904ce570905052ba6844f3383fde93ad1267b65a3ae4b236db2fd05",
+    "lastModified": "Tue, 13 May 2025 15:18:11 GMT",
+    "etag": "\"682362b3-f27a45\""
+  },
+  {
+    "name": "soffice.data.js.metadata",
+    "url": "https://cdn.zetaoffice.net/zetaoffice_latest/soffice.data.js.metadata",
+    "encoding": null,
+    "bytes": 215180,
+    "sha256": "5d9d909d0b9b38443c0f19704032d0fc12d654f6c9c24c2c3b237739c4848ae3",
+    "lastModified": "Tue, 13 May 2025 15:18:06 GMT",
+    "etag": "\"682362ae-3488c\""
+  },
+  {
+    "name": "zeta.js",
+    "url": "https://raw.githubusercontent.com/allotropia/zetajs/main/source/zeta.js",
+    "bytes": 42951,
+    "sha256": "ee633709bfa1de3221e8f68beb395f68fd5ff00cab9e33ba22e97e8271b348b4"
+  }
+]

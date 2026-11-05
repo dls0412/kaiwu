@@ -1,0 +1,117 @@
+{
+  "url": "https://github.com/dls0412/kaiwu/releases/download/v0.4.0/kaiwu-dependencies-v0.4.0.zip",
+  "version": "0.4.0",
+  "files": [
+    {
+      "path": "tools/engine/libmpv-2.dll",
+      "bytes": 121911296,
+      "sha256": "1d3c4067692048c6cab7735954e2299664b94c098fcdb8f7bc700e6a6a133ed6"
+    },
+    {
+      "path": "documents/vendor/Microsoft.Web.WebView2.Core.dll",
+      "bytes": 703328,
+      "sha256": "acdd517b951829f763d1255f32df1e6a936cb8623a7ebff6b8b24172dede6bd6"
+    },
+    {
+      "path": "documents/vendor/Microsoft.Web.WebView2.WinForms.dll",
+      "bytes": 38792,
+      "sha256": "c66437f80886aecf074804b61af4cc10ad90a95310c8e0a717f31ea377c26b03"
+    },
+    {
+      "path": "documents/vendor/WebView2Loader.dll",
+      "bytes": 194912,
+      "sha256": "d3fce90bdeecb08596e377dea6a316354dd8949e32ff09b89d51be00c14e21b6"
+    },
+    {
+      "path": "documents/helpers/ocr.ps1",
+      "bytes": 1844,
+      "sha256": "e0bde35b3126255622170b01aa9861d9c4f8cb16a962230350d2af4331ec07fd"
+    },
+    {
+      "path": "documents/helpers/download/lux.exe",
+      "bytes": 23003648,
+      "sha256": "d7ccfb5fb6f8c1c581f9aa111339d8ae578651e5d618fdfe79eb30e25c920772"
+    },
+    {
+      "path": "documents/helpers/speech/ggml-base.dll",
+      "bytes": 666624,
+      "sha256": "1482359d921b4c1b183d49db1d770f9b5e90d86a618b8b648d4845c2471ad6b0"
+    },
+    {
+      "path": "documents/helpers/speech/ggml-cpu-alderlake.dll",
+      "bytes": 809984,
+      "sha256": "d1c5411561361f7ce71ff8455ecf01f666f581b0608fa91a1dfe7d3fd6a25bd1"
+    },
+    {
+      "path": "documents/helpers/speech/ggml-cpu-cannonlake.dll",
+      "bytes": 853504,
+      "sha256": "2ef36f05fa252ff4fdcb8d42ebce1ceba4f3d3de12b93bed15bdee6237dccd63"
+    },
+    {
+      "path": "documents/helpers/speech/ggml-cpu-cascadelake.dll",
+      "bytes": 850944,
+      "sha256": "505899aaf3f99c5d714361640f561458ea97f8a09eb0614568a66bead2115cb0"
+    },
+    {
+      "path": "documents/helpers/speech/ggml-cpu-haswell.dll",
+      "bytes": 811008,
+      "sha256": "f8cf2f35a06498d783d77fde42004dd54d2f8236b0d42ac323b94bba65a603c4"
+    },
+    {
+      "path": "documents/helpers/speech/ggml-cpu-icelake.dll",
+      "bytes": 850944,
+      "sha256": "78ad143ee2e674d037b4840ef33b5748a0659762a26e0ae2b621c4f9451cbde8"
+    },
+    {
+      "path": "documents/helpers/speech/ggml-cpu-sandybridge.dll",
+      "bytes": 803328,
+      "sha256": "ee47db7dc40fb30eca73e62a05306059c2c3c42aecddf2e8d6ad7e530069b815"
+    },
+    {
+      "path": "documents/helpers/speech/ggml-cpu-skylakex.dll",
+      "bytes": 852992,
+      "sha256": "164e2793897944a43ee071ce6c0b09018088bdf4dd8b14ac0755c58849cf8c50"
+    },
+    {
+      "path": "documents/helpers/speech/ggml-cpu-sse42.dll",
+      "bytes": 790016,
+      "sha256": "7318a9a3b95a85b2453c437b274412bbbae89e5ecdf5babb19b99edc06ded063"
+    },
+    {
+      "path": "documents/helpers/speech/ggml-cpu-x64.dll",
+      "bytes": 794112,
+      "sha256": "af0f1c2f28ff9e3f472481dd969907bda85fa39d4fde17617d4bb0b389301b60"
+    },
+    {
+      "path": "documents/helpers/speech/ggml.dll",
+      "bytes": 67584,
+      "sha256": "894c6237ee7849843213906a2b6a0b371aaa6234048d465f206d910ae846fafb"
+    },
+    {
+      "path": "documents/helpers/speech/whisper-cli.exe",
+      "bytes": 479232,
+      "sha256": "95e3c0b0e778ad9499eb0125f97c1dcf437dd9eb4ea77050b043574f93c2631d"
+    },
+    {
+      "path": "documents/helpers/speech/whisper.dll",
+      "bytes": 1368064,
+      "sha256": "792fc523c7ad16e6b9c348e30ad5e5f591165cbcf6a80ca8d0db02a38ce3eea2"
+    },
+    {
+      "path": "documents/app/engine/soffice.data.br",
+      "bytes": 15891013,
+      "sha256": "9d3c1cf3c904ce570905052ba6844f3383fde93ad1267b65a3ae4b236db2fd05"
+    },
+    {
+      "path": "documents/app/engine/soffice.js.br",
+      "bytes": 157580,
+      "sha256": "4bed643112ab973eb42706d1adcd5bc37c89338ce1225ef571df263d6eb47413"
+    },
+    {
+      "path": "documents/app/engine/soffice.wasm.br",
+      "bytes": 36279250,
+      "sha256": "a11808aaba3c9a4412a865bde645247fd9d0b262b5baa0680a9fced29a8656e4"
+    }
+  ],
+  "sha256": "5da9e84517509467e5215ba11934fcc968db3c4069023966d1570eb1efc69feb"
+}

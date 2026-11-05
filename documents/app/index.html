@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>开物</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/input.css">
+  <link rel="stylesheet" href="/pdf/pdf_viewer.css">
+<link rel="stylesheet" href="/refined.css">
+</head>
+<body>
+  <svg class="svg-defs" aria-hidden="true"><defs>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10z"/><path d="M13 3v7h7M8 14h8M8 17h6"/></symbol>
+    <symbol id="i-open" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h5l3 3h6a2 2 0 0 1 2 2v2M3 7h7l2 3h10l-3 10H3z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-save" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12l4 4v12a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8M7 3v5h9V3"/></symbol>
+    <symbol id="i-print" viewBox="0 0 24 24"><path d="M6 9V3h12v6M6 17H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M6 14h12v7H6z"/><path d="M18 12h.01"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24"><path d="m8 4-5 5 5 5M3 9h11a7 7 0 0 1 0 14"/></symbol>
+    <symbol id="i-redo" viewBox="0 0 24 24"><path d="m16 4 5 5-5 5M21 9H10a7 7 0 0 0 0 14"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="M4 5h16M4 10h10M4 15h16M4 20h10"/></symbol>
+    <symbol id="i-center" viewBox="0 0 24 24"><path d="M4 5h16M7 10h10M4 15h16M7 20h10"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="M4 5h16M10 10h10M4 15h16M10 20h10"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8" cy="8" r="1.5"/><path d="m21 16-6-6L3 21"/></symbol>
+    <symbol id="i-table" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  </defs></svg>
+
+  <header class="filebar">
+    <button id="home-button" class="brand" title="返回首页" aria-label="开物首页"><span class="brand-mark"><svg><use href="#i-file"/></svg></span><span>开物</span></button>
+    <div id="file-identity" class="file-identity" hidden><span id="file-type" class="type-bookmark">DOCX</span><span id="file-name" title="未命名文档">未命名文档</span><span id="save-status" class="save-status">未保存</span></div>
+    <div class="file-actions">
+      <button id="open-button" class="button"><svg><use href="#i-open"/></svg><span>打开</span></button>
+      <details class="dropdown" id="new-menu"><summary class="button"><svg><use href="#i-plus"/></svg><span>新建</span></summary><div class="menu new-menu">
+        <button data-new="writer"><span class="small-type word">W</span><span>文字文档<small>DOCX</small></span></button>
+        <button data-new="calc"><span class="small-type sheet">S</span><span>电子表格<small>XLSX</small></span></button>
+        <button data-new="impress"><span class="small-type slide">P</span><span>演示文稿<small>PPTX</small></span></button>
+      </div></details>
+      <button id="save-button" class="button primary" disabled><svg><use href="#i-save"/></svg><span>保存</span></button>
+      <button id="print-button" class="icon-button" disabled aria-label="打印" title="打印 Ctrl+P"><svg><use href="#i-print"/></svg></button>
+      <details class="dropdown" id="more-menu"><summary class="icon-button" aria-label="更多操作" title="更多操作"><svg><use href="#i-more"/></svg></summary><div class="menu">
+        <button id="save-as-button" disabled>另存为<span>Ctrl Shift S</span></button>
+        <button id="switch-media">视频与图片</button><button id="switch-tools">文件工具</button><hr><button id="conversion-button" type="button">转换格式…</button><button id="pdf-button" disabled>导出 PDF</button>
+        <button id="print-menu-button" disabled>打印…<span>Ctrl P</span></button>
+        <hr>
+        <button id="full-tools-button" disabled>展开更多排版</button>
+        <button id="close-button" disabled>关闭当前文件</button>
+        <hr><button id="about-button">关于开物</button>
+      </div></details>
+    </div>
+  </header>
+
+  <main id="home" class="home">
+    <div class="home-inner">
+      <div class="intro"><span class="eyebrow">把时间留给内容</span><h1>打开文件，接着做事。</h1><p>文字、表格、演示和 PDF，一个窗口就够。</p></div>
+      <button id="drop-zone" class="drop-zone"><span class="open-illustration"><svg><use href="#i-open"/></svg></span><span class="drop-title">选择文件，或拖到这里</span><span class="drop-hint">DOC · DOCX · XLS · XLSX · PPT · PPTX · PDF</span><span class="open-label">打开本地文件 <span aria-hidden="true">↗</span></span></button>
+      <div class="create-line"><span>从空白开始</span><button data-new="writer"><span class="small-type word">W</span>文字文档</button><button data-new="calc"><span class="small-type sheet">S</span>电子表格</button><button data-new="impress"><span class="small-type slide">P</span>演示文稿</button></div>
+      <section id="recent-section" class="recent-section" hidden><div class="section-caption"><h2>最近打开</h2><button id="clear-recents">清空记录</button></div><div id="recent-list"></div></section>
+      <p class="privacy-note"><span class="status-dot"></span> 文件在本机处理 · 无需账号</p>
+    </div>
+  </main>
+
+  <section id="workspace" class="workspace" hidden>
+    <div id="toolbar" class="toolbar" aria-label="编辑工具栏">
+      <div class="tool-group"><button class="tool" data-command="Undo" title="撤销 Ctrl+Z" aria-label="撤销"><svg><use href="#i-undo"/></svg></button><button class="tool" data-command="Redo" title="重做 Ctrl+Y" aria-label="重做"><svg><use href="#i-redo"/></svg></button></div>
+      <div class="tool-group pdf-tools" hidden><button id="pdf-previous" class="tool" aria-label="上一页">‹</button><span id="pdf-page-number">1 / 1</span><button id="pdf-next" class="tool" aria-label="下一页">›</button></div>
+      <div class="tool-group pdf-tools" hidden><button class="tool wide" data-pdf-tool="select" aria-pressed="true">选择</button><button class="tool wide" data-pdf-tool="text" aria-pressed="false">添加文字</button><button class="tool wide" data-pdf-tool="highlight" aria-pressed="false">高亮</button><button id="pdf-delete-note" class="tool wide">删除标注</button></div>
+      <div class="tool-group font-tools"><select id="font-family" title="字体" aria-label="字体"><option value="Microsoft YaHei">微软雅黑</option><option value="Liberation Serif">衬线体</option><option value="Liberation Sans">无衬线体</option><option value="Liberation Mono">等宽体</option></select><select id="font-size" title="字号" aria-label="字号"><option>10</option><option>11</option><option selected>12</option><option>14</option><option>16</option><option>18</option><option>20</option><option>24</option><option>28</option><option>32</option><option>36</option><option>48</option><option>60</option><option>72</option></select></div>
+      <div class="tool-group"><button class="tool" data-command="Bold" title="加粗 Ctrl+B" aria-label="加粗" aria-pressed="false"><b>B</b></button><button class="tool" data-command="Italic" title="斜体 Ctrl+I" aria-label="斜体" aria-pressed="false"><i>I</i></button><button class="tool" data-command="Underline" title="下划线 Ctrl+U" aria-label="下划线" aria-pressed="false"><u>U</u></button><label class="color-tool tool" title="文字颜色"><span>A</span><input id="font-color" type="color" value="#242b27" aria-label="文字颜色"></label></div>
+      <div class="tool-group"><button class="tool" data-command="LeftPara" title="左对齐" aria-label="左对齐"><svg><use href="#i-left"/></svg></button><button class="tool" data-command="CenterPara" title="居中" aria-label="居中"><svg><use href="#i-center"/></svg></button><button class="tool" data-command="RightPara" title="右对齐" aria-label="右对齐"><svg><use href="#i-right"/></svg></button></div>
+      <div class="tool-group insert-tools"><button id="insert-table-button" class="tool wide" title="插入表格"><svg><use href="#i-table"/></svg><span>表格</span></button><button id="insert-image-button" class="tool wide" title="插入图片"><svg><use href="#i-image"/></svg><span>图片</span></button><button id="kind-action-button" class="tool wide" title="插入分页符">分页</button></div>
+      <div class="toolbar-end"><button id="find-button" class="tool" title="查找 Ctrl+F" aria-label="查找"><svg><use href="#i-search"/></svg></button><button id="reading-button" class="tool wide" title="收起工具栏">专注</button></div>
+    </div>
+    <div id="canvas-container" class="canvas-container">
+      <canvas id="qtcanvas" contenteditable="true" aria-label="文档编辑区域" spellcheck="false"></canvas>
+      <textarea id="text-input" class="text-input" aria-label="文档文字输入" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+      <div id="pdf-container" class="pdf-container" hidden></div>
+      <div id="loading" class="loading" hidden><span class="spinner"></span><strong id="loading-title">正在准备文档…</strong><span id="loading-detail">首次打开需要几秒钟</span></div>
+    </div>
+    <footer class="statusbar"><span id="document-info">文字文档</span><span id="editor-state">本地编辑</span><div class="zoom"><button id="zoom-out" aria-label="缩小">−</button><button id="zoom-label" title="恢复 100%">100%</button><button id="zoom-in" aria-label="放大">+</button></div></footer>
+  </section>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+  <input id="file-input" type="file" accept=".doc,.docx,.odt,.rtf,.txt,.xls,.xlsx,.ods,.csv,.ppt,.pptx,.odp,.pdf,.odg" hidden>
+  <input id="image-input" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp" hidden>
+  <dialog id="unsaved-dialog"><h2>文件有未保存的修改</h2><p>保存后再继续，修改就不会丢失。</p><div class="dialog-actions"><button class="button" data-result="cancel">取消</button><button class="button" data-result="discard">放弃修改</button><button class="button primary" data-result="save">保存并继续</button></div></dialog>
+  <dialog id="table-dialog"><form method="dialog"><h2>插入表格</h2><div class="field-row"><label>行数<input id="table-rows" type="number" min="1" max="100" value="3" required></label><label>列数<input id="table-columns" type="number" min="1" max="30" value="3" required></label></div><div class="dialog-actions"><button class="button" value="cancel" formnovalidate>取消</button><button class="button primary" value="insert">插入</button></div></form></dialog>
+  <dialog id="pdf-text-dialog"><form method="dialog"><h2>在这里添加文字</h2><label class="pdf-note-label">内容<textarea id="pdf-note-text" rows="3" required></textarea></label><label class="pdf-note-label">字号<input id="pdf-note-size" type="number" min="8" max="72" value="14" required></label><div class="dialog-actions"><button class="button" value="cancel" formnovalidate>取消</button><button class="button primary" value="insert">添加</button></div></form></dialog>
+  <dialog id="about-dialog"><div class="about-mark"><svg><use href="#i-file"/></svg></div><h2>开物 <small>0.4</small></h2><p>把文件打开，把事情做完。</p><p class="about-detail">文档在本机处理，退出即停止运行。<br>基于 ZetaOffice / LibreOffice 与 ZetaJS。<br>复杂版式、宏及特殊动画仍需逐项核对。</p><div class="dialog-actions"><button class="button primary" id="about-close">知道了</button></div></dialog>
+  <script src="/conversion.js" defer></script>
+  <script src="/app.js" defer></script>
+<dialog id="conversion-dialog"><h2>转换格式</h2><p>转换当前内容并另存，保留原文档。</p><label>目标格式 <select id="conversion-target"></select></label><div class="dialog-actions"><button class="button" data-convert-cancel>取消</button><button class="button primary" data-convert-start>转换并另存…</button></div></dialog>
+</body>
+</html>
+
+

@@ -1,0 +1,1 @@
+.text-input{position:absolute;z-index:-1;width:2px;height:24px;opacity:0;resize:none;padding:0;border:0;pointer-events:none;overflow:hidden;font:16px "Microsoft YaHei",sans-serif;caret-color:transparent}body[data-kind=pdf] .text-input{display:none}

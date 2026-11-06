@@ -10,7 +10,7 @@
 
 ## 下载与使用
 
-1. 在 Releases 下载 `kaiwu-v0.4.1-windows-x64.zip`。
+1. 在 Releases 下载 `kaiwu-v0.4.2-windows-x64.zip`。
 2. 解压整个文件夹，双击 `开物.exe`。保留同目录的 DLL、app、helpers、licenses 和 ui 文件夹。
 3. 支持打开或拖入文件。也可在 Windows 的“打开方式”中选择开物。
 

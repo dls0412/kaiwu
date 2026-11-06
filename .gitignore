@@ -26,3 +26,4 @@
 /tests/*
 !/tests/BuildSmoke.cs
 !/tools/package-release.ps1
+!/tools/RenderBrand.cs

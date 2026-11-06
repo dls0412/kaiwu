@@ -1,11 +1,11 @@
-using System;using System.IO;using System.Drawing;using System.Drawing.Drawing2D;using System.Drawing.Imaging;using System.Collections.Generic;
+﻿using System;using System.IO;using System.Drawing;using System.Drawing.Drawing2D;using System.Drawing.Imaging;using System.Collections.Generic;
 // Preserve RGBA PNG frames directly; Icon.FromHandle().Save() can discard alpha.
 static class PackageIcon {
  static void Main(string[] args){
-  if(args.Length<2)throw new ArgumentException("Usage: PackageIcon atlas.png output.ico [preview.png]");
+  if(args.Length<2)throw new ArgumentException("Usage: PackageIcon app-icon.png output.ico [preview.png]");
   int[] sizes={16,24,32,48,64,128,256};var frames=new List<byte[]>();
   using(var atlas=Image.FromFile(args[0]))foreach(int size in sizes)using(var bitmap=new Bitmap(size,size,PixelFormat.Format32bppArgb)){
-   using(var g=Graphics.FromImage(bitmap)){g.Clear(Color.Transparent);g.CompositingMode=CompositingMode.SourceCopy;g.InterpolationMode=InterpolationMode.HighQualityBicubic;g.PixelOffsetMode=PixelOffsetMode.HighQuality;g.DrawImage(atlas,new RectangleF(-size*.1015625f,-size*.1015625f,size*1.203125f,size*1.203125f),new RectangleF(atlas.Width/3f,0,atlas.Width/3f,atlas.Height/3f),GraphicsUnit.Pixel);}
+   using(var g=Graphics.FromImage(bitmap)){g.Clear(Color.Transparent);g.CompositingMode=CompositingMode.SourceCopy;g.InterpolationMode=InterpolationMode.HighQualityBicubic;g.PixelOffsetMode=PixelOffsetMode.HighQuality;g.DrawImage(atlas,new RectangleF(0,0,size,size),new RectangleF(0,0,atlas.Width,atlas.Height),GraphicsUnit.Pixel);}
    using(var stream=new MemoryStream()){bitmap.Save(stream,ImageFormat.Png);frames.Add(stream.ToArray());}
    if(size==256&&args.Length>2)bitmap.Save(args[2],ImageFormat.Png);
   }

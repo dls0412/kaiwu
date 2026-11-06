@@ -1,5 +1,7 @@
 ﻿# 开物 Kaiwu
 
+<img src="docs/images/logo.png" width="96" alt="开物 K 标志">
+
 一个 Windows 桌面文件工具，把视频、音频、图片、文档和常用处理功能放进同一个窗口。
 
 [下载 Windows 便携版](https://github.com/dls0412/kaiwu/releases/latest) · [问题反馈](https://github.com/dls0412/kaiwu/issues)
@@ -8,7 +10,7 @@
 
 ## 下载与使用
 
-1. 在 Releases 下载 `kaiwu-v0.4.0-windows-x64.zip`。
+1. 在 Releases 下载 `kaiwu-v0.4.1-windows-x64.zip`。
 2. 解压整个文件夹，双击 `开物.exe`。保留同目录的 DLL、app、helpers、licenses 和 ui 文件夹。
 3. 支持打开或拖入文件。也可在 Windows 的“打开方式”中选择开物。
 

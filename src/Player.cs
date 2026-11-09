@@ -84,7 +84,7 @@ class Surface : Panel {
 class FlatButton : Control {
     public bool Hover;
     public FlatButton(string text) {Text=text; Size=new Size(44,34); Cursor=Cursors.Hand; ForeColor=Color.FromArgb(210,215,223); SetStyle(ControlStyles.UserPaint|ControlStyles.AllPaintingInWmPaint|ControlStyles.OptimizedDoubleBuffer,true); MouseEnter+=(s,e)=>{Hover=true;Invalidate();}; MouseLeave+=(s,e)=>{Hover=false;Invalidate();};}
-    protected override void OnPaint(PaintEventArgs e) {if(Hover)e.Graphics.Clear(Color.FromArgb(43,47,56)); TextRenderer.DrawText(e.Graphics,Text,new Font("Segoe UI",10),ClientRectangle,ForeColor,TextFormatFlags.HorizontalCenter|TextFormatFlags.VerticalCenter);}
+    protected override void OnPaint(PaintEventArgs e) {if(Hover)e.Graphics.Clear(Color.FromArgb(43,47,56)); using(var font=new Font("Segoe UI",10))TextRenderer.DrawText(e.Graphics,Text,font,ClientRectangle,ForeColor,TextFormatFlags.HorizontalCenter|TextFormatFlags.VerticalCenter);}
 }
 class SeekBar : Control {
     public double Fraction;
@@ -106,7 +106,11 @@ partial class Player : Form {
     bool audioMode;
     bool loaded,fullscreen,closing; string current=""; DateTime activity=DateTime.Now; Point lastCursor;
     Rectangle savedBounds; FormWindowState savedState; string[] initial;
+#if TEST_BUILD
+    readonly string settingsPath=Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"test-settings.txt");
+#else
     readonly string settingsPath=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"GlintPlayer","settings.txt");
+#endif
     public string CaptureFolder=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),"开物");
     GifRecorder recording,exporting; double recordSeconds,lastRecordTick,lastFrameTime; string notice="";DateTime noticeUntil;
     public Player(string[] args) {
@@ -157,16 +161,17 @@ partial class Player : Form {
     public static readonly string[] ImageExtensions=".jpg .jpeg .jfif .png .bmp .gif .tif .tiff .webp .avif .ico".Split(' ');
     static bool IsImage(string path){return ImageExtensions.Contains(Path.GetExtension(path).ToLowerInvariant());}
     void LoadFiles(string[] files) {
-        var existing=files.Where(File.Exists).ToArray();if(existing.Length==0)return;foreach(string file in existing)RecentStore.Record(file);HideHome();
+        var existing=files.Where(File.Exists).ToArray();if(existing.Length==0)return;
+        if(existing.Length==1&&loaded&&!imageMode&&!homeMode&&!documentMode&&new[]{".srt",".ass",".ssa",".vtt",".sub"}.Contains(Path.GetExtension(existing[0]).ToLowerInvariant())){engine.Command("sub-add",existing[0],"select");Touch();return;}
+        foreach(string file in existing)RecentStore.Record(file);HideHome();
         if(ToolFile(existing[0])){EnterToolsFile(existing[0]);return;}
         if(IsDocument(existing[0])){EnterDocuments(existing[0]);return;}
         LeaveDocuments();SetWindowChrome(true);if(shellBar!=null){shellBar.Active="media";KeepShell();}
-        if(existing.Length==1 && new[]{".srt",".ass",".ssa",".vtt",".sub"}.Contains(Path.GetExtension(existing[0]).ToLowerInvariant())){if(loaded)engine.Command("sub-add",existing[0],"select");return;}
         playlist=existing.ToList();index=0;
         if(existing.Length==1&&IsImage(existing[0])){try{playlist=Directory.GetFiles(Path.GetDirectoryName(Path.GetFullPath(existing[0]))).Where(IsImage).OrderBy(p=>p,StringComparer.OrdinalIgnoreCase).ToList();index=playlist.FindIndex(p=>string.Equals(Path.GetFullPath(p),Path.GetFullPath(existing[0]),StringComparison.OrdinalIgnoreCase));}catch{playlist=existing.ToList();index=0;}}
         LoadCurrent();
     }
-    void LoadCurrent() {if(index<0||index>=playlist.Count)return;if(IsDocument(playlist[index])){EnterDocuments(playlist[index]);return;}StopGif();audioMode=false;video.Audio=false;imageDecode=false;current=playlist[index];loaded=false;video.Loaded=false;video.Message="正在打开…";video.Invalidate();Text=Path.GetFileName(current)+" · 开物";
+    void LoadCurrent() {if(index<0||index>=playlist.Count)return;if(ToolFile(playlist[index])){EnterToolsFile(playlist[index]);return;}if(IsDocument(playlist[index])){EnterDocuments(playlist[index]);return;}LeaveDocuments();HideHome();SetWindowChrome(true);if(shellBar!=null){shellBar.Active="media";KeepShell();}StopGif();audioMode=false;video.Audio=false;imageDecode=false;current=playlist[index];loaded=false;video.Loaded=false;video.Message="正在打开…";video.Invalidate();Text=Path.GetFileName(current)+" · 开物";
         if(IsImage(current)){ImageMode(true);engine.Command("stop");images.Clear();images.Visible=true;images.BringToFront();try{images.LoadFile(current);loaded=true;AdjustImageWindow();UpdateImageInfo();}catch{engine.Set("vid","auto");imageDecode=true;imageReady=false;imageDeadline=DateTime.Now.AddSeconds(8);engine.Set("pause","no");if(engine.Command("loadfile",current,"replace")<0)FailImage();}Touch();return;}
         ImageMode(false);engine.Set("vid",new[]{".mp3",".wav",".m4a",".flac",".ogg",".opus",".aac",".wma"}.Contains(Path.GetExtension(current).ToLowerInvariant())?"no":"auto");engine.Set("pause","no");int r=engine.Command("loadfile",current,"replace");if(r<0)Fail("无法打开这个文件");Touch();}
     void FailImage(){imageDecode=false;images.Visible=false;video.Visible=true;Fail("图片无法解码、已损坏或无法访问");}
@@ -175,7 +180,7 @@ partial class Player : Form {
         if(engine==null||closing)return;
         if(documentMode){TickCapture();footer.Visible=false;return;}
         if(homeMode){TickCapture();footer.Visible=false;return;}
-        documentButton.Visible=toolsButton.Visible=!loaded&&!imageMode;documentButton.Location=new Point(124,30);if(documentButton.Visible)time.Visible=false;
+        documentButton.Visible=toolsButton.Visible=!loaded&&!imageMode;documentButton.Location=new Point(124,30);time.Visible=(!imageMode||footer.Width>=530)&&!documentButton.Visible;
         for(int i=0;i<50;i++) {
             IntPtr p=Native.mpv_wait_event(engine.Handle,0);int id=Marshal.ReadInt32(p);if(id==0)break;
             if(id==8&&!imageMode){loaded=true;audioMode=new[]{".mp3",".wav",".m4a",".flac",".ogg",".opus",".aac",".wma"}.Contains(Path.GetExtension(current).ToLowerInvariant())||engine.Number("width")==0;video.Loaded=!audioMode;video.Audio=audioMode;video.AudioTitle=Path.GetFileNameWithoutExtension(current);video.Invalidate();video.Message="";Text=Path.GetFileName(engine.Get("path"))+" · 开物";}
@@ -227,13 +232,14 @@ partial class Player : Form {
     void Touch(){activity=DateTime.Now;if(fullscreen)footer.BringToFront();if(!homeMode&&!documentMode&&!footer.Visible)footer.Visible=true;}
     void Toggle(){if(engine.Get("eof-reached")=="yes"){engine.Command("seek","0","absolute");engine.Set("pause","no");}else engine.Command("cycle","pause");Touch();}
     void Volume(int delta){if(imageMode)return;engine.Set("volume",Math.Max(0,Math.Min(100,engine.Number("volume")+delta)).ToString(System.Globalization.CultureInfo.InvariantCulture));Touch();}
-    void ToggleFullscreen(){if(!loaded||homeMode||documentMode)return;Touch();if(!fullscreen){savedBounds=Bounds;savedState=WindowState;fullscreenFrame=SizeFromClientSize(Size.Empty);WindowState=FormWindowState.Normal;if(shellBar!=null)shellBar.Visible=false;Bounds=Screen.FromControl(this).Bounds;fullscreen=true;footer.Dock=DockStyle.None;footer.Anchor=AnchorStyles.Left|AnchorStyles.Right|AnchorStyles.Bottom;footer.SetBounds(0,ClientSize.Height-footer.Height,ClientSize.Width,footer.Height);footer.BringToFront();}else{fullscreen=false;footer.Anchor=AnchorStyles.Left|AnchorStyles.Top;footer.Dock=DockStyle.Bottom;if(shellBar!=null)shellBar.Visible=true;Bounds=savedBounds;WindowState=savedState;KeepShell();}}
+    void ToggleFullscreen(){if(!fullscreen&&(!loaded||homeMode||documentMode))return;Touch();if(!fullscreen){savedBounds=Bounds;savedState=WindowState;fullscreenFrame=SizeFromClientSize(Size.Empty);WindowState=FormWindowState.Normal;if(shellBar!=null)shellBar.Visible=false;Bounds=Screen.FromControl(this).Bounds;fullscreen=true;footer.Dock=DockStyle.None;footer.Anchor=AnchorStyles.Left|AnchorStyles.Right|AnchorStyles.Bottom;footer.SetBounds(0,ClientSize.Height-footer.Height,ClientSize.Width,footer.Height);footer.BringToFront();}else{fullscreen=false;footer.Anchor=AnchorStyles.Left|AnchorStyles.Top;footer.Dock=DockStyle.Bottom;if(shellBar!=null)shellBar.Visible=true;Bounds=savedBounds;WindowState=savedState;KeepShell();}}
     protected override bool ProcessCmdKey(ref Message msg,Keys key) {
         if(engine==null)return base.ProcessCmdKey(ref msg,key);
         if(key==(Keys.Control|Keys.H)){ShowHome();return true;}
         if(key==(Keys.Control|Keys.Shift|Keys.E)){ConvertCurrent();return true;}
         if(key==(Keys.Control|Keys.D)){EnterDocuments(null);return true;}
         if(key==(Keys.Control|Keys.T)){EnterTools();return true;}
+        if(homeMode){if(key==(Keys.Control|Keys.O)){Open();return true;}return base.ProcessCmdKey(ref msg,key);}
         if(documentMode){if(key==(Keys.Control|Keys.O)){Open();return true;}return base.ProcessCmdKey(ref msg,key);}
         if(imageMode){switch(key){case Keys.Left:Next(-1);return true;case Keys.Right:Next(1);return true;case Keys.D0:case Keys.NumPad0:images.Fit();return true;case Keys.D1:case Keys.NumPad1:images.ActualSize();return true;case Keys.R:RotateImage();return true;case Keys.Up:images.ZoomAt(1.2,new Point(images.Width/2,images.Height/2));return true;case Keys.Down:images.ZoomAt(1/1.2,new Point(images.Width/2,images.Height/2));return true;case Keys.Space:return true;case Keys.S:case Keys.G:return true;}}
         if(key==Keys.S){TakeScreenshot();return true;}if(key==Keys.G){ToggleGif();return true;}
@@ -258,7 +264,7 @@ partial class Player : Form {
             if(playlist.Count>1){var list=new ToolStripMenuItem("播放列表（"+playlist.Count+"）");for(int j=0;j<playlist.Count;j++){int n=j;var it=Item(Path.GetFileName(playlist[j]),()=>{index=n;LoadCurrent();});it.Checked=j==index;list.DropDownItems.Add(it);}menu.Items.Add(list);}
         }
         menu.Items.Add(new ToolStripSeparator());menu.Items.Add(Item("打开截图与 GIF 文件夹",OpenCaptureFolder));var pin=Item("窗口置顶",()=>TopMost=!TopMost);pin.Checked=TopMost;menu.Items.Add(pin);
-        menu.Items.Add(Item(fullscreen?"退出全屏    F":"全屏    F",ToggleFullscreen));menu.Items.Add(Item("设置默认打开方式…",RegisterDefault));menu.Items.Add(Item("快捷键与关于",()=>MessageBox.Show(this,"开物 0.4.3 · 视频、图片与文档\n\n空格  播放 / 暂停\n← →  后退 / 前进 5 秒\n↑ ↓ / 滚轮  调整音量\nF / F11 / 双击  全屏\nEsc  退出全屏\nM  静音\nS  保存当前画面（PNG）\nG  开始 / 停止录制 GIF\nCtrl+O  打开文件\nCtrl+D  文档\nCtrl+Shift+E  文档转换格式\nCtrl+← →  切换列表文件\n\n看图：← → 上下张，滚轮缩放，按住拖动\n0 适应窗口，1 实际大小，R 旋转\n\nGIF 最长 30 秒、宽度不超过 640 像素、约 10 帧/秒。\n截图和 GIF 默认保存到「图片\\开物」。\n支持拖入视频；播放中拖入字幕即可加载。\n\n解码内核：mpv / FFmpeg\n开源许可与来源见随附说明。","开物")));
+        menu.Items.Add(Item(fullscreen?"退出全屏    F":"全屏    F",ToggleFullscreen));menu.Items.Add(Item("设置默认打开方式…",RegisterDefault));menu.Items.Add(Item("快捷键与关于",()=>MessageBox.Show(this,"开物 0.4.4 · 视频、图片与文档\n\n空格  播放 / 暂停\n← →  后退 / 前进 5 秒\n↑ ↓ / 滚轮  调整音量\nF / F11 / 双击  全屏\nEsc  退出全屏\nM  静音\nS  保存当前画面（PNG）\nG  开始 / 停止录制 GIF\nCtrl+O  打开文件\nCtrl+D  文档\nCtrl+Shift+E  文档转换格式\nCtrl+← →  切换列表文件\n\n看图：← → 上下张，滚轮缩放，按住拖动\n0 适应窗口，1 实际大小，R 旋转\n\nGIF 最长 30 秒、宽度不超过 640 像素、约 10 帧/秒。\n截图和 GIF 默认保存到「图片\\开物」。\n支持拖入视频；播放中拖入字幕即可加载。\n\n解码内核：mpv / FFmpeg\n开源许可与来源见随附说明。","开物")));
         if(anchor==more)point=new Point(anchor.Width-menu.PreferredSize.Width,-menu.PreferredSize.Height);menu.Show(anchor,point);Touch();
     }
     public static readonly string[] Extensions=".mp4 .mkv .mov .avi .webm .flv .ts .m2ts .mts .m4v .wmv .mpg .mpeg .vob .3gp .ogv .rm .rmvb .asf .mxf".Split(' ');
@@ -275,7 +281,26 @@ partial class Player : Form {
         foreach(string ext in DocumentExtensions)using(var k=Registry.CurrentUser.CreateSubKey(@"Software\Classes\"+ext+@"\OpenWithProgids"))k.SetValue("GlintPlayer.Document",new byte[0],RegistryValueKind.None);
         RegisterExtraTypes(exe);
     }
-    void RegisterDefault(){try{RegisterApplication();Process.Start(new ProcessStartInfo("ms-settings:defaultapps?registeredAppUser="+Uri.EscapeDataString("开物")){UseShellExecute=true});}catch(Exception ex){MessageBox.Show(this,"无法打开默认应用设置："+ex.Message,"开物");}}
+    internal static bool DefaultRegistrationReady(string exe){
+        string command="\""+exe+"\" \"%1\"";
+        foreach(string id in new[]{"GlintPlayer.Video","GlintPlayer.Image","GlintPlayer.Document","GlintPlayer.File","Applications\\开物.exe"})
+            using(var key=Registry.CurrentUser.OpenSubKey(@"Software\Classes\"+id+@"\shell\open\command"))
+                if(key==null||!string.Equals(key.GetValue("") as string,command,StringComparison.OrdinalIgnoreCase))return false;
+        using(var registered=Registry.CurrentUser.OpenSubKey(@"Software\RegisteredApplications"))
+            if(registered==null||!string.Equals(registered.GetValue("开物") as string,@"Software\GlintPlayer\Capabilities",StringComparison.OrdinalIgnoreCase))return false;
+        using(var associations=Registry.CurrentUser.OpenSubKey(@"Software\GlintPlayer\Capabilities\FileAssociations"))
+        using(var supported=Registry.CurrentUser.OpenSubKey(@"Software\Classes\Applications\开物.exe\SupportedTypes")){
+            if(associations==null||supported==null)return false;
+            foreach(var group in new[]{new{Extensions=Extensions,Id="GlintPlayer.Video"},new{Extensions=ImageExtensions,Id="GlintPlayer.Image"},new{Extensions=DocumentExtensions,Id="GlintPlayer.Document"},new{Extensions=ExtraExtensions,Id="GlintPlayer.File"}})
+                foreach(string ext in group.Extensions){
+                    if(!string.Equals(associations.GetValue(ext) as string,group.Id,StringComparison.OrdinalIgnoreCase)||supported.GetValue(ext)==null)return false;
+                    using(var openWith=Registry.CurrentUser.OpenSubKey(@"Software\Classes\"+ext+@"\OpenWithProgids"))
+                        if(openWith==null||!openWith.GetValueNames().Contains(group.Id,StringComparer.OrdinalIgnoreCase))return false;
+                }
+        }
+        return true;
+    }
+    void RegisterDefault(){try{if(!DefaultRegistrationReady(Application.ExecutablePath))RegisterApplication();Process.Start(new ProcessStartInfo("ms-settings:defaultapps?registeredAppUser="+Uri.EscapeDataString("开物")){UseShellExecute=true});}catch(Exception ex){MessageBox.Show(this,"无法打开默认应用设置："+ex.Message,"开物");}}
     void AddTracks(string title,string type,string property){
         var parent=new ToolStripMenuItem(title);parent.DropDownItems.Add(Item("关闭",()=>engine.Set(property,"no")));
         try {var tracks=new JavaScriptSerializer().DeserializeObject(engine.Get("track-list")) as object[];if(tracks!=null)foreach(var raw in tracks){var t=raw as Dictionary<string,object>;if(t==null||!t.ContainsKey("type")||Convert.ToString(t["type"])!=type)continue;string id=Convert.ToString(t["id"]);string label="#"+id;foreach(string k in new[]{"lang","title","codec"})if(t.ContainsKey(k))label+=" · "+Convert.ToString(t[k]);var item=Item(label,()=>engine.Set(property,id));item.Checked=t.ContainsKey("selected")&&Convert.ToBoolean(t["selected"]);parent.DropDownItems.Add(item);}}catch{}
